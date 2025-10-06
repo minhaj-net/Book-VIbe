@@ -1,10 +1,12 @@
-import React from "react";
 import { useLoaderData, useParams } from "react-router";
+import { addToStoredDB } from "../../Utility/addToDB";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const BookDetails = () => {
   const data = useLoaderData();
-  console.log(data);
-
   const { id } = useParams();
   const bookId = parseInt(id);
   const singleBook = data.find((book) => book.bookId === bookId);
@@ -24,8 +26,26 @@ const BookDetails = () => {
   // const singleBook = data.find((book) => book.bookId === bookId);
   // console.log(singleBook);
 
+  const handleMarksRead = (id) => {
+    addToStoredDB(id);
+    Swal.fire({
+      title: "Do you want to save the changes?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Save",
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Saved!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  };
+
   return (
-    <div className="flex justify-center items-center mt-16  gap-16 ">
+    <div className="md:flex justify-center items-center mt-16  gap-16 md:m-0 m-4">
       <div>
         <img className="w-[425px] h-[525px] rounded-2xl" src={image} alt="" />
       </div>
@@ -33,7 +53,7 @@ const BookDetails = () => {
         <h3 className="font-bold text-4xl text-[#131313]">{bookName}</h3>
         <p className="font-medium text-[#131313B3]">By : {author}</p>
         <h3>{category}</h3>
-        <div className="w-[690px] text-gray-400">
+        <div className="md:w-[690px] text-gray-400">
           <span className="font-bold text-black">Review :</span>
           {review}
         </div>
@@ -62,7 +82,10 @@ const BookDetails = () => {
           </div>
         </div>
         <div className="flex justify-baseline gap-10">
-          <button className="btn bg-[#c3bfbf4d]  rounded-lg px-7 py-5">
+          <button
+            onClick={() => handleMarksRead(id)}
+            className="btn bg-[#c3bfbf4d]  rounded-lg px-7 py-5"
+          >
             Read
           </button>
           <button className="btn bg-[#50B1C9] text-white rounded-lg px-7 py-5">
