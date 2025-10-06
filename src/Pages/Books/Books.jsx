@@ -16,9 +16,9 @@ const Books = ({ data }) => {
 
   return (
     <div>
-      <h3 className="text-3xl text-center font-bold">Books</h3>
+      <h3 className="text-3xl mx-auto text-center font-bold">Books</h3>
       <Suspense fallback={<div>Loading...</div>}>
-        <div className="grid grid-cols-3">
+        <div className="grid text-center md:grid-cols-3">
           {data.map((singleBook) => (
             <Book singleBook={singleBook} key={singleBook.bookId}></Book>
           ))}
